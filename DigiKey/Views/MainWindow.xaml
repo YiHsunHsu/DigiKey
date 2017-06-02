@@ -1,0 +1,38 @@
+﻿<Window x:Class="DigiKey.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DigiKey"
+        xmlns:vm="clr-namespace:DigiKey.ViewModels"
+        mc:Ignorable="d"
+        Title="DigiKey" Height="250" Width="500" ResizeMode="NoResize">
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="0.8*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="0.8*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="0.8*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Content="伺服器位置" />
+        <TextBox Grid.Row="1" Text="{Binding ServerIP}"/>
+        <Label Grid.Row="2" Content="醫事機構代碼" />
+        <TextBox Grid.Row="3" MaxLength="15" Text="{Binding AgencyID}"/>
+        <Label Grid.Row="4" Content="驗證碼" />
+        <TextBox Grid.Row="5" Text="{Binding VerificationCode}"/>
+        <WrapPanel Grid.Row="6" VerticalAlignment="Center">
+            <Button Content="註冊驗證碼" Margin="5" Padding="5"/>
+            <Button Content="停用" Margin="5" Padding="5"/>
+            <Button Content="試用版" Margin="5" Padding="5"/>
+        </WrapPanel>
+    </Grid>
+</Window>
