@@ -24,9 +24,9 @@
             <RowDefinition Height="1*"></RowDefinition>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Content="伺服器位置" />
-        <TextBox Grid.Row="1" Text="{Binding ServerIP}"/>
+        <TextBox Grid.Row="1" MaxLength="15" Text="{Binding ServerIP, UpdateSourceTrigger=PropertyChanged}"/>
         <Label Grid.Row="2" Content="醫事機構代碼" />
-        <TextBox Grid.Row="3" MaxLength="15" Text="{Binding AgencyID}"/>
+        <TextBox Grid.Row="3" MaxLength="10" Text="{Binding AgencyCode}"/>
         <Label Grid.Row="4" Content="驗證碼" />
         <TextBox Grid.Row="5" Text="{Binding VerificationCode}"/>
         <WrapPanel Grid.Row="6" VerticalAlignment="Center">

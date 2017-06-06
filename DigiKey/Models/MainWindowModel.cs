@@ -9,7 +9,7 @@
         /// <summary>
         /// 機構代碼
         /// </summary>
-        public string AgencylID { get; set; }
+        public string AgencyCode { get; set; }
         /// <summary>
         /// 驗證碼
         /// </summary>
