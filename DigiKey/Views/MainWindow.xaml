@@ -26,11 +26,11 @@
         <Label Grid.Row="0" Content="伺服器位置" />
         <TextBox Grid.Row="1" MaxLength="15" Text="{Binding ServerIP, UpdateSourceTrigger=PropertyChanged}"/>
         <Label Grid.Row="2" Content="醫事機構代碼" />
-        <TextBox Grid.Row="3" MaxLength="10" Text="{Binding AgencyCode}"/>
+        <TextBox Grid.Row="3" MaxLength="10" Text="{Binding AgencyCode, UpdateSourceTrigger=PropertyChanged}"/>
         <Label Grid.Row="4" Content="驗證碼" />
-        <TextBox Grid.Row="5" Text="{Binding VerificationCode}"/>
+        <TextBox Grid.Row="5" Text="{Binding VerificationCode, UpdateSourceTrigger=PropertyChanged}"/>
         <WrapPanel Grid.Row="6" VerticalAlignment="Center">
-            <Button Content="註冊驗證碼" Margin="5" Padding="5"/>
+            <Button Content="註冊驗證碼" Margin="5" Padding="5" Command="{Binding RegisterToServer}"/>
             <Button Content="停用" Margin="5" Padding="5"/>
             <Button Content="試用版" Margin="5" Padding="5"/>
         </WrapPanel>
