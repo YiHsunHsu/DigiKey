@@ -63,6 +63,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Class\KeyGenerator.cs" />
+    <Compile Include="Class\ValidatorHelper.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Models\MainWindowModel.cs" />
     <Compile Include="ViewModelBases\ViewModelBase.cs" />
@@ -96,8 +97,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resource\key.ico" />
+    <Resource Include="Resource\no.png" />
+    <Resource Include="Resource\yes.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

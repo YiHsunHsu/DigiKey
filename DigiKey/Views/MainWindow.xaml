@@ -6,33 +6,38 @@
         xmlns:local="clr-namespace:DigiKey"
         xmlns:vm="clr-namespace:DigiKey.ViewModels"
         mc:Ignorable="d"
-        Title="DigiKey" Height="250" Width="500" ResizeMode="NoResize">
+        Title="DigiKey" Height="260" Width="500" ResizeMode="NoResize" Icon="/DigiKey;component/Resource/key.ico">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="30"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="0.8*"></RowDefinition>
+            <RowDefinition Height="0.7*"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="0.8*"></RowDefinition>
+            <RowDefinition Height="0.7*"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="0.8*"></RowDefinition>
+            <RowDefinition Height="0.7*"></RowDefinition>
             <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="0.7*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Content="伺服器位置" />
-        <TextBox Grid.Row="1" MaxLength="15" Text="{Binding ServerIP, UpdateSourceTrigger=PropertyChanged}"/>
-        <Label Grid.Row="2" Content="醫事機構代碼" />
-        <TextBox Grid.Row="3" MaxLength="10" Text="{Binding AgencyCode, UpdateSourceTrigger=PropertyChanged}"/>
-        <Label Grid.Row="4" Content="驗證碼" />
-        <TextBox Grid.Row="5" Text="{Binding VerificationCode, UpdateSourceTrigger=PropertyChanged}"/>
-        <WrapPanel Grid.Row="6" VerticalAlignment="Center">
-            <Button Content="註冊驗證碼" Margin="5" Padding="5" Command="{Binding RegisterToServer}"/>
-            <Button Content="停用" Margin="5" Padding="5"/>
-            <Button Content="試用版" Margin="5" Padding="5"/>
+        <Label Grid.Row="0" Grid.ColumnSpan="2" Content="伺服器位置" />
+        <TextBox Grid.Row="1" Grid.Column="0" MaxLength="15" Text="{Binding ServerIP, UpdateSourceTrigger=PropertyChanged}" />
+        <Image Grid.Row="1" Grid.Column="1" Source="{Binding ServerStatus}"/>
+        <Label Grid.Row="2" Grid.ColumnSpan="2" Content="醫事機構代碼"/>
+        <TextBox Grid.Row="3" Grid.ColumnSpan="2" MaxLength="10" IsEnabled="{Binding CheckIPConnection}" Text="{Binding AgencyCode, UpdateSourceTrigger=PropertyChanged}" />
+        <Label Grid.Row="4" Grid.ColumnSpan="2" Content="驗證碼" />
+        <TextBox Grid.Row="5" Grid.ColumnSpan="2" IsEnabled="{Binding CheckIPConnection}" Text="{Binding VerificationCode, UpdateSourceTrigger=PropertyChanged}" />
+        <WrapPanel Grid.Row="6" Grid.ColumnSpan="2" VerticalAlignment="Center">
+            <Button Content="註冊驗證碼" Margin="5" Padding="5" Command="{Binding RegisterCommand}" />
+            <Button Content="啟用" Margin="5" Padding="5" Command="{Binding RunCommand}"/>
+            <Button Content="停用" Margin="5" Padding="5" Command="{Binding StopCommand}"/>
+            <Button Content="試用版" Margin="5" Padding="5" Command="{Binding TryCommand}"/>
         </WrapPanel>
+        <Label Grid.Row="7" Grid.ColumnSpan="2" Content="{Binding Tip, UpdateSourceTrigger=PropertyChanged}" />
     </Grid>
 </Window>

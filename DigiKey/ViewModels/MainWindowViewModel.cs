@@ -2,7 +2,9 @@
 using DigiKey.Commands;
 using DigiKey.Models;
 using DigiKey.ViewModelBases;
+using System;
 using System.Data.SqlClient;
+using System.Windows;
 using System.Windows.Input;
 
 namespace DigiKey.ViewModels
@@ -10,14 +12,10 @@ namespace DigiKey.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         private MainWindowModel mainWindowModel;
-        private KeyGenerator keyGenerator;
-        private string _PrivateKey;
         public MainWindowViewModel()
         {
             mainWindowModel = new MainWindowModel();
-            keyGenerator = new KeyGenerator();
-        }
-        
+        }        
         public string ServerIP
         {
             get { return mainWindowModel.ServerIP; }
@@ -25,20 +23,43 @@ namespace DigiKey.ViewModels
             {
                 mainWindowModel.ServerIP = value;
                 OnPropertyChanged("ServerIP");
+                OnPropertyChanged("ServerStatus");
+                OnPropertyChanged("CheckIPConnection");
             }
         }
-
+        public string ServerStatus
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(ServerIP))
+                {
+                    if (CheckIPConnection)
+                        return "/DigiKey;component/Resource/yes.png";
+                }
+                return "/DigiKey;component/Resource/no.png";
+            }
+        }
+        public bool CheckIPConnection
+        {
+            get
+            {
+                return mainWindowModel.CheckIPConnection;
+            }
+        }
         public string AgencyCode
         {
             get { return mainWindowModel.AgencyCode; }
             set
             {
                 mainWindowModel.AgencyCode = value;
-                _PrivateKey = keyGenerator.SHA384Encode(mainWindowModel.AgencyCode);
                 OnPropertyChanged("AgencyCode");
+                OnPropertyChanged("Tip");
             }
         }
-
+        public bool IsAgencyExist { get { return mainWindowModel.IsAgencyExist; } set { mainWindowModel.IsAgencyExist = value; } }
+        public bool IsVerify { get { return mainWindowModel.IsVerify; } set { mainWindowModel.IsVerify = value; } }
+        public string TrialPeriod { get { return mainWindowModel.TrialPeriod; } set { mainWindowModel.TrialPeriod = value; } }
+        public bool IsTry { get { return mainWindowModel.IsTry; } set { mainWindowModel.IsTry = value; } }
         public string VerificationCode
         {
             get { return mainWindowModel.VerificationCode; }
@@ -48,45 +69,181 @@ namespace DigiKey.ViewModels
                 OnPropertyChanged("VerificationCode");
             }
         }
-
-        private RelayCommand _register;
-        public ICommand RegisterToServer
+        public string Tip
         {
             get
             {
-                if (_register == null)
+                string TextTip = string.Empty;
+                if (IsAgencyExist)
                 {
-                    _register = new RelayCommand(Register, CanRegister);
+                    TextTip = "機構代號:" + AgencyCode + "狀態:";
+                    if (IsVerify)
+                    {
+                        if (IsTry)
+                        {
+                            TextTip += "為試用版，試用日期至" + TrialPeriod + "。";
+                        }
+                        else
+                        {
+                            TextTip += "啟用中。";
+                        }
+                    }
+                    else
+                    {
+                        TextTip += "停用中。";
+                    }
                 }
-                return _register;
+                else
+                {
+                    TextTip = "機構代號:" + AgencyCode + "狀態:尚未註冊";
+                }
+                return TextTip;
             }
         }
-
-        private void Register()
+        #region METHOD
+        private bool CheckTextBox()
         {
-        }
-
-        private bool CanRegister()
-        {
-           if ((!string.IsNullOrEmpty(AgencyCode)) || (!string.IsNullOrEmpty(VerificationCode)))
+            if (!string.IsNullOrEmpty(AgencyCode) && !string.IsNullOrEmpty(VerificationCode))
             {
-                if(!string.IsNullOrEmpty(VerificationCode))
-                    return VerificationCode.Equals(_PrivateKey) ? true : false;
+                if(VerificationCode.Equals(mainWindowModel.PrivateKey))
+                    return true;
             }
             return false;
         }
-        //private bool checkCon(string ip)
-        //{
-        //    SqlConnection con = new SqlConnection(@"Server=" + ip + @"\DIGIDENTAL;Database=DigiDental;User Id=sa;Password=0939566880;");
-        //    try
-        //    {
-        //        con.Open();
-        //        return true;
-        //    }
-        //    catch
-        //    {
-        //        return false;
-        //    }
-        //}
+        #endregion
+        #region 註冊鈕
+        private RelayCommand registerCommand;
+        public ICommand RegisterCommand
+        {
+            get
+            {
+                if (registerCommand == null)
+                {
+                    registerCommand = new RelayCommand(Register, CanRegister);
+                }
+                return registerCommand;
+            }
+        }
+        private void Register()
+        {
+            mainWindowModel.InsertAgency();
+            OnPropertyChanged("Tip");
+        }
+        private bool CanRegister()
+        {
+            if (CheckTextBox())
+            {
+                if (IsAgencyExist)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        #endregion
+        #region 啟用鈕
+        private RelayCommand runCommand;
+        public ICommand RunCommand
+        {
+            get
+            {
+                if (runCommand == null)
+                {
+                    runCommand = new RelayCommand(RunButton, CanRun);
+                }
+                return runCommand;
+            }
+        }
+        private bool CanRun()
+        {
+            if (CheckTextBox())
+            {
+                if (IsAgencyExist)
+                {
+                    if ((IsVerify && IsTry) || !IsVerify)
+                    {
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+        private void RunButton()
+        {
+            mainWindowModel.UpdateAgencyStatus("RUN");
+            OnPropertyChanged("Tip");
+        }
+        #endregion
+        #region 停用鈕
+        private RelayCommand stopCommand;
+        public ICommand StopCommand
+        {
+            get
+            {
+                if (stopCommand == null)
+                {
+                    stopCommand = new RelayCommand(StopButton, CanStop);
+                }
+                return stopCommand;
+            }
+        }
+        private bool CanStop()
+        {
+            if (CheckTextBox())
+            {
+                if (IsAgencyExist)
+                {
+                    if (IsVerify)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        private void StopButton()
+        {
+            mainWindowModel.UpdateAgencyStatus("STOP");
+            OnPropertyChanged("Tip");
+        }
+        #endregion
+        #region 試用鈕
+        private RelayCommand tryCommand;
+        public ICommand TryCommand
+        {
+            get
+            {
+                if (tryCommand == null)
+                {
+                    tryCommand = new RelayCommand(TryButton, CanTry);
+                }
+                return tryCommand;
+            }
+        }
+        private bool CanTry()
+        {
+            if (CheckTextBox())
+            {
+                if (IsAgencyExist)
+                {
+                    if (IsVerify && !IsTry)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void TryButton()
+        {
+            mainWindowModel.UpdateAgencyStatus("TRY");
+            OnPropertyChanged("Tip");
+        }
+        #endregion
     }
 }
